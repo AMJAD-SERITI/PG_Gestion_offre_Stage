@@ -31,7 +31,7 @@ public class CondidatService {
         condidatRepo.save(condidat);
     }
 
-    public Condidat registerCondidat(Condidat condidat) {
-        return condidatRepo.save(condidat);
+    public void saveCondidat(Condidat condidat) {
+        condidatRepo.save(condidat);
     }
 }

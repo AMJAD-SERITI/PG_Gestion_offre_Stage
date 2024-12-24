@@ -1,8 +1,10 @@
 package org.amjad.pg_gestion_offre_stage.Controller;
 
 import org.amjad.pg_gestion_offre_stage.Service.CondidatService;
+import org.amjad.pg_gestion_offre_stage.Service.EncadrantService;
 import org.amjad.pg_gestion_offre_stage.Service.RhService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,4 +17,18 @@ public class RhController {
 
     @Autowired
     private CondidatService condidatService;
+
+    @Autowired
+    private EncadrantService encadrantService;
+
+
+    @PostMapping("/validate")
+    public void validateCondidat(Long id) {
+        condidatService.validateCondidat(id);
+    }
+
+    @PostMapping("/associate")
+    public void associateCondidatToEncadrant(Long condidatId, Long encadrantId) {
+        rhService.associateCondidatToEncadrant(condidatId, encadrantId);
+    }
 }
