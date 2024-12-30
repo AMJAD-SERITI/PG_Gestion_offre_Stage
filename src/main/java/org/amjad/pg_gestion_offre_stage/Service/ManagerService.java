@@ -1,24 +1,29 @@
 package org.amjad.pg_gestion_offre_stage.Service;
 
 import jakarta.transaction.Transactional;
-import org.amjad.pg_gestion_offre_stage.Dao.RhRepo;
+import org.amjad.pg_gestion_offre_stage.Dao.ManagerRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
 import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
-import org.amjad.pg_gestion_offre_stage.Entity.Rh;
+import org.amjad.pg_gestion_offre_stage.Entity.Manager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RhService {
+public class ManagerService {
 
-    private final RhRepo rhRepo;
+    private final ManagerRepo managerRepo;
     private final CondidatService condidatService;
     private final EncadrantService encadrantService;
 
-   
-    public RhService(RhRepo rhRepo, CondidatService condidatService, EncadrantService encadrantService) {
-        this.rhRepo = rhRepo;
+    @Autowired
+    public ManagerService(ManagerRepo managerRepo, CondidatService condidatService, EncadrantService encadrantService) {
+        this.managerRepo = managerRepo;
         this.condidatService = condidatService;
         this.encadrantService = encadrantService;
+    }
+
+    public void saveManager(Manager manager) {
+        managerRepo.save(manager);
     }
 
     @Transactional
@@ -27,13 +32,5 @@ public class RhService {
         Encadrant encadrant = encadrantService.getEncadrantById(encadrantId);
         condidat.setEncadrant(encadrant);
         condidatService.saveCondidat(condidat);
-    }
-
-    public Rh getRhById(Long id) {
-        return rhRepo.findById(id).orElseThrow(() -> new IllegalStateException("Rh with id " + id + " does not exist"));
-    }
-
-    public void saveRh(Rh rh) {
-        rhRepo.save(rh);
     }
 }
