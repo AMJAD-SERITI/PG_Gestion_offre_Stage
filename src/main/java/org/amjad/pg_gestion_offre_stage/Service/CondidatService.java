@@ -2,6 +2,8 @@ package org.amjad.pg_gestion_offre_stage.Service;
 
 import org.amjad.pg_gestion_offre_stage.Dao.CondidatRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -9,12 +11,12 @@ import java.util.List;
 @Service
 public class CondidatService {
 
-    private final CondidatRepo condidatRepo;
+    @Autowired
+    private CondidatRepo condidatRepo;
 
-   
-    public CondidatService(CondidatRepo condidatRepo) {
-        this.condidatRepo = condidatRepo;
-    }
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public Condidat getCondidatById(Long id) {
         return condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
@@ -32,8 +34,10 @@ public class CondidatService {
         condidatRepo.save(condidat);
     }
 
-    public Condidat registerCondidat(Condidat condidat) {
-        return condidatRepo.save(condidat);
+    public void registerCondidat(Condidat condidat) {
+        String encodedPassword = bCryptPasswordEncoder.encode(condidat.getPassword());
+        condidat.setPassword(encodedPassword);
+        condidatRepo.save(condidat);
     }
 
     public Condidat getCondidatByEmail(String email) {

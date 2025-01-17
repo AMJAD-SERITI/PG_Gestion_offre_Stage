@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/encadrant")
 public class EncadrantController {
 
-
     private final EncadrantService encadrantService;
-
     public EncadrantController(EncadrantService encadrantService) {
         this.encadrantService = encadrantService;
     }
