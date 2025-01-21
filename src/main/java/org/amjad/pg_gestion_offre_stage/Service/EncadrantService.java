@@ -2,9 +2,12 @@ package org.amjad.pg_gestion_offre_stage.Service;
 
 import java.util.List;
 
+import org.amjad.pg_gestion_offre_stage.DTO.LoginRequest;
 import org.amjad.pg_gestion_offre_stage.Dao.EncadrantRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
 import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -12,12 +15,10 @@ import jakarta.transaction.Transactional;
 @Service
 public class EncadrantService {
 
-    private final EncadrantRepo encadrantRepo;
-
-   
-    public EncadrantService(EncadrantRepo encadrantRepo) {
-        this.encadrantRepo = encadrantRepo;
-    }
+    @Autowired
+    private EncadrantRepo encadrantRepo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Encadrant getEncadrantById(Long encadrantId) {
         return encadrantRepo.findById(encadrantId).orElseThrow(() -> new IllegalStateException("Encadrant with id " + encadrantId + " does not exist"));
@@ -28,6 +29,8 @@ public class EncadrantService {
     }
 
     public void saveEncadrant(Encadrant encadrant) {
+        String passwordEncoded = bCryptPasswordEncoder.encode(encadrant.getPassword());
+        encadrant.setPassword(passwordEncoded);
         encadrantRepo.save(encadrant);
     }
 

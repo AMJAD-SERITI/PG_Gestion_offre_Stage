@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -30,23 +28,22 @@ public class SecurityConf {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests((authz) -> authz
-                    .requestMatchers("/login", "/logout").permitAll()
-                    .requestMatchers("/api/condidat/**").hasAnyRole("CONDIDAT", "ADMIN")
-                    .requestMatchers("/api/rh/**").hasAnyRole("RH", "ADMIN")
-                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                .requestMatchers("/login", "/logout").permitAll()
+                .requestMatchers("/api/condidat/**").permitAll()
+                .requestMatchers("/api/rh/**").hasAnyRole("RH", "ADMIN")
+                .requestMatchers("/api/admin/**").permitAll()
+                .anyRequest().authenticated()
         );
 
         http.cors(cors -> cors.configurationSource(request -> {
-            var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
-            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            corsConfiguration.setAllowedHeaders(List.of("*"));
-            corsConfiguration.setAllowCredentials(true);
-            return corsConfiguration;
-        }))
-
-        .csrf(csrf -> csrf.disable());
+                    var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
@@ -56,10 +53,8 @@ public class SecurityConf {
         return new BCryptPasswordEncoder();
     }
 
-    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
 }
