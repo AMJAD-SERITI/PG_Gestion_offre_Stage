@@ -1,5 +1,6 @@
 package org.amjad.pg_gestion_offre_stage.Controller;
 
+import org.amjad.pg_gestion_offre_stage.Entity.Admin;
 import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
 import org.amjad.pg_gestion_offre_stage.Entity.Rh;
 import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
@@ -28,6 +29,11 @@ public class AdminController {
     private RhService rhService;
 
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerAdmin(@RequestBody Admin admin) {
+        adminService.registerAdmin(admin);
+        return ResponseEntity.ok("Admin created successfully");
+    }
 
     @PostMapping("/add/{role}")
     public ResponseEntity<String> addUser(@PathVariable String role, @RequestParam String email, @RequestParam String password) {
@@ -54,6 +60,7 @@ public class AdminController {
                 return ResponseEntity.badRequest().body("Invalid role");
         }
     }
+
     // Fetch all stagiaire accounts
     @GetMapping("/stagiaires")
     public ResponseEntity<List<Stagiaire>> getAllStagiaires() {
@@ -80,5 +87,47 @@ public class AdminController {
     public ResponseEntity<Stagiaire> changeStagiaireStatus(@PathVariable Long id, @RequestBody Stagiaire updatedStagiaire) {
         Stagiaire stagiaire = serviceStagiaire.changeStagiaireStatus(id, updatedStagiaire);
         return ResponseEntity.ok(stagiaire);
+    }
+
+    // Fetch all encadrant accounts
+    @GetMapping("/encadrants")
+    public ResponseEntity<List<Encadrant>> getAllEncadrants() {
+        List<Encadrant> encadrants = encadrantService.getAllEncadrants();
+        return ResponseEntity.ok(encadrants);
+    }
+
+    // Update encadrant account
+    @PutMapping("/encadrants/{id}")
+    public ResponseEntity<Encadrant> updateEncadrant(@PathVariable Long id, @RequestBody Encadrant updatedEncadrant) {
+        Encadrant encadrant = encadrantService.updateEncadrant(id, updatedEncadrant);
+        return ResponseEntity.ok(encadrant);
+    }
+
+    // Delete encadrant account
+    @DeleteMapping("/encadrants/{id}")
+    public ResponseEntity<Void> deleteEncadrant(@PathVariable Long id) {
+        encadrantService.deleteEncadrant(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Fetch all RH accounts
+    @GetMapping("/rhs")
+    public ResponseEntity<List<Rh>> getAllRhs() {
+        List<Rh> rhs = rhService.getAllRhs();
+        return ResponseEntity.ok(rhs);
+    }
+
+    // Update RH account
+    @PutMapping("/rhs/{id}")
+    public ResponseEntity<Rh> updateRh(@PathVariable Long id, @RequestBody Rh updatedRh) {
+        Rh rh = rhService.updateRh(id, updatedRh);
+        return ResponseEntity.ok(rh);
+    }
+
+    // Delete RH account
+    @DeleteMapping("/rhs/{id}")
+    public ResponseEntity<Void> deleteRh(@PathVariable Long id) {
+        rhService.deleteRh(id);
+        return ResponseEntity.noContent().build();
     }
 }

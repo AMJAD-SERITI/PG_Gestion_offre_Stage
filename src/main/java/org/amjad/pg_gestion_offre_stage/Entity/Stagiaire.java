@@ -1,6 +1,8 @@
 package org.amjad.pg_gestion_offre_stage.Entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import org.amjad.pg_gestion_offre_stage.Enum.Duree;
 import org.amjad.pg_gestion_offre_stage.Enum.Status;
 
@@ -11,6 +13,17 @@ public class Stagiaire extends User {
     private Duree duree;
     private String CIN;
     private Status status;
+    @ManyToOne
+    @JoinColumn(name = "encadrant_id")
+    private Encadrant encadrant;
+
+    public Encadrant getEncadrant() {
+        return encadrant;
+    }
+
+    public void setEncadrant(Encadrant encadrant) {
+        this.encadrant = encadrant;
+    }
 
     public byte[] getCv() {
         return cv;

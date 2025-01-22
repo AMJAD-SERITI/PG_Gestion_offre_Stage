@@ -3,27 +3,29 @@ package org.amjad.pg_gestion_offre_stage.Controller;
 import java.util.List;
 
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
+import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
 import org.amjad.pg_gestion_offre_stage.Service.EncadrantService;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.amjad.pg_gestion_offre_stage.Service.ServiceStagiaire;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api/encadrant")
 public class EncadrantController {
 
-    private final EncadrantService encadrantService;
-
-    public EncadrantController(EncadrantService encadrantService) {
-        this.encadrantService = encadrantService;
-    }
+    @Autowired
+    private  EncadrantService encadrantService;
+    @Autowired
+    private ServiceStagiaire serviceStagiaire;
 
     @GetMapping("/getCondidats/{id}")
-    public List<Condidat> getCondidats(@PathVariable Long id) {
-        return encadrantService.getCondidats(id);
+    public List<Stagiaire> getCondidats(@PathVariable Long id) {
+        return encadrantService.getStagiaire(id);
     }
-    
+
+    @PostMapping("/stagiaire/update/{id}")
+    public void updateStagiaire(@PathVariable Long id, @RequestBody Stagiaire stagiaire) {
+    serviceStagiaire.updateStagiaire(id, stagiaire);
+    }
 }

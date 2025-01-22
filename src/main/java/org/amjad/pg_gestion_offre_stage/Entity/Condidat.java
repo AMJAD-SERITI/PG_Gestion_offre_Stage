@@ -15,9 +15,6 @@ public class Condidat extends User {
     private Duree duree;
     private String CIN;
     private String description;
-    @ManyToOne
-    @JoinColumn(name = "encadrant_id")
-    private Encadrant encadrant;
 
     public byte[] getCv() {
         return cv;
@@ -33,14 +30,6 @@ public class Condidat extends User {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
-    }
-
-    public Encadrant getEncadrant() {
-        return encadrant;
-    }
-
-    public void setEncadrant(Encadrant encadrant) {
-        this.encadrant = encadrant;
     }
 
     public Duree getDuree() {
