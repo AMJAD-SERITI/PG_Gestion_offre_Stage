@@ -32,6 +32,7 @@ public class SecurityConf {
                 .requestMatchers("/api/condidat/**").permitAll()
                 .requestMatchers("/api/rh/**").hasAnyRole("RH", "ADMIN")
                 .requestMatchers("/api/admin/**").permitAll()
+                .requestMatchers("/api/encadrant/**").permitAll()
                 .anyRequest().authenticated()
         );
 

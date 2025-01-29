@@ -36,12 +36,14 @@ public class ServiceStagiaire {
         stagiaire.setPrenom(updatedStagiaire.getPrenom());
         stagiaire.setEmail(updatedStagiaire.getEmail());
         stagiaire.setPassword(updatedStagiaire.getPassword());
+        stagiaire.setStatut(updatedStagiaire.getStatut());
+        stagiaire.setSujet(updatedStagiaire.getSujet());
         return stagiaireRepo.save(stagiaire);
     }
 
     public Stagiaire changeStagiaireStatus(Long id, Stagiaire updatedStagiaire) {
         Stagiaire stagiaire = stagiaireRepo.findById(id).orElseThrow(() -> new IllegalStateException("Stagiaire with id " + id + " does not exist"));
-        stagiaire.setStatus(updatedStagiaire.getStatus());
+        stagiaire.setStatut(updatedStagiaire.getStatut());
         return stagiaireRepo.save(stagiaire);
     }
 }
