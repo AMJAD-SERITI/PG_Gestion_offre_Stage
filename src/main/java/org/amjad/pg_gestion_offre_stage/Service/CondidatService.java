@@ -22,18 +22,6 @@ public class CondidatService {
         return condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
     }
 
-    public void validateCondidat(Long id) {
-        Condidat condidat = condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
-        condidat.setValidated(true);
-        condidatRepo.save(condidat);
-    }
-
-    public void unvalidateCondidat(Long id) {
-        Condidat condidat = condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
-        condidat.setValidated(false);
-        condidatRepo.save(condidat);
-    }
-
     public void registerCondidat(Condidat condidat) {
         String encodedPassword = bCryptPasswordEncoder.encode(condidat.getPassword());
         condidat.setPassword(encodedPassword);

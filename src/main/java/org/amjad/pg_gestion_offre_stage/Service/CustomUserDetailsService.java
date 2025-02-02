@@ -41,28 +41,28 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Check if the user is a Condidat
         Condidat condidat = condidatRepository.findByEmail(email).orElse(null);
         if (condidat != null) {
-            authorities.add(new SimpleGrantedAuthority("CONDIDAT"));
+            authorities.add(new SimpleGrantedAuthority(condidat.getRole()));
             return new org.springframework.security.core.userdetails.User(condidat.getEmail(), condidat.getPassword(), authorities);
         }
 
         // Check if the user is an Encadrant
         Encadrant encadrant = encadrantRepository.findByEmail(email).orElse(null);
         if (encadrant != null) {
-            authorities.add(new SimpleGrantedAuthority("ENCADRANT"));
+            authorities.add(new SimpleGrantedAuthority(encadrant.getRole()));
             return new org.springframework.security.core.userdetails.User(encadrant.getEmail(), encadrant.getPassword(), authorities);
         }
 
         // Check if the user is an Admin
         Admin admin = adminRepository.findByEmail(email).orElse(null);
         if (admin != null) {
-            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+            authorities.add(new SimpleGrantedAuthority(admin.getRole()));
             return new org.springframework.security.core.userdetails.User(admin.getEmail(), admin.getPassword(), authorities);
         }
 
         // Check if the user is an Rh
         Rh rh = rhRepository.findByEmail(email).orElse(null);
         if (rh != null) {
-            authorities.add(new SimpleGrantedAuthority("RH"));
+            authorities.add(new SimpleGrantedAuthority(rh.getRole()));
             return new org.springframework.security.core.userdetails.User(rh.getEmail(), rh.getPassword(), authorities);
         }
 

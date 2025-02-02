@@ -30,7 +30,7 @@ public class SecurityConf {
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/login", "/logout").permitAll()
                 .requestMatchers("/api/condidat/**").permitAll()
-                .requestMatchers("/api/rh/**").hasAnyRole("RH", "ADMIN")
+                .requestMatchers("/api/rh/**").permitAll()
                 .requestMatchers("/api/admin/**").permitAll()
                 .requestMatchers("/api/encadrant/**").permitAll()
                 .anyRequest().authenticated()
