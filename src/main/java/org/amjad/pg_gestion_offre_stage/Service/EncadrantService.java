@@ -1,6 +1,7 @@
 package org.amjad.pg_gestion_offre_stage.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.amjad.pg_gestion_offre_stage.DTO.LoginRequest;
 import org.amjad.pg_gestion_offre_stage.Dao.EncadrantRepo;
@@ -32,6 +33,9 @@ public class EncadrantService {
     }
 
     public void saveEncadrant(Encadrant encadrant) {
+        if(encadrantRepo.findByEmail(encadrant.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already taken");
+        }
         String passwordEncoded = bCryptPasswordEncoder.encode(encadrant.getPassword());
         encadrant.setPassword(passwordEncoded);
         encadrantRepo.save(encadrant);
@@ -55,8 +59,8 @@ public class EncadrantService {
         return encadrant.getStagiaires();
     }
 
-    public Encadrant findByEmail(String email) {
-        return encadrantRepo.findByEmail(email).orElseThrow(() -> new UnsupportedOperationException("Unimplemented method 'findByEmail'"));
+    public Optional<Encadrant> findByEmail(String email) {
+        return encadrantRepo.findByEmail(email);
     }
 
     public List<Encadrant> getAllEncadrants() {

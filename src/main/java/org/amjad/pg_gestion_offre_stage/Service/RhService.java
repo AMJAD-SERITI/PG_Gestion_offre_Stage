@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RhService {
@@ -29,6 +30,9 @@ public class RhService {
     }
 
     public void saveRh(Rh rh) {
+        if(rhRepo.findByEmail(rh.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already taken");
+        }
         String passwordEncoded = bCryptPasswordEncoder.encode(rh.getPassword());
         rh.setPassword(passwordEncoded);
         rhRepo.save(rh);
@@ -49,5 +53,9 @@ public class RhService {
 
     public void deleteRh(Long id) {
         rhRepo.deleteById(id);
+    }
+
+    public Optional<Rh> findByEmail(String email) {
+        return rhRepo.findByEmail(email);
     }
 }

@@ -1,5 +1,6 @@
 package org.amjad.pg_gestion_offre_stage.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,6 +21,12 @@ public class Stagiaire extends User {
     private String CIN;
     private Status statut;
     private String sujet;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "encadrant_id")
+    private Encadrant encadrant;
+    
 
     public Status getStatut() {
         return statut;

@@ -1,5 +1,9 @@
 package org.amjad.pg_gestion_offre_stage.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.amjad.pg_gestion_offre_stage.Config.JwtTokenUtil;
 import org.amjad.pg_gestion_offre_stage.DTO.LoginRequest;
 import org.amjad.pg_gestion_offre_stage.Service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,41 +27,60 @@ public class LoginController {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @GetMapping
     public String login() {
         return "Login page";
     }
 
-    @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
+@PostMapping
+public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    String email = loginRequest.getEmail();
+    String password = loginRequest.getPassword();
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password, userDetails.getAuthorities()));
+    Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password, userDetails.getAuthorities()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
-                .orElse("");
+    String role = userDetails.getAuthorities().stream()
+            .findFirst()
+            .map(grantedAuthority -> grantedAuthority.getAuthority())
+            .orElse("");
 
-        switch (role) {
-            case "ADMIN":
-                return ResponseEntity.ok("/AdminPage");
-            case "CONDIDAT":
-                return ResponseEntity.ok("/Candidatures");
-            case "ENCADRANT":
-                return ResponseEntity.ok("/SupervisorPage");
-            case "RH":
-                return ResponseEntity.ok("/DemandsPage");
-            case"STAGIAIRE":
-                return ResponseEntity.ok("/Encadrant");
-            default:
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
-        }
+    String redirectUrl;
+    switch (role) {
+        case "ADMIN":
+            redirectUrl = "/AdminPage";
+            break;
+        case "CONDIDAT":
+            redirectUrl = "/Candidatures";
+            break;
+        case "ENCADRANT":
+            redirectUrl = "/SupervisorPage";
+            break;
+        case "RH":
+            redirectUrl = "/DemandsPage";
+            break;
+        case "STAGIAIRE":
+            redirectUrl = "/Encadrant";
+            break;
+        default:
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Access Denied"));
     }
+
+    // Generate the token (assuming you have a method to do this)
+    String token = jwtTokenUtil.generateToken(userDetails);
+
+    // Return both the token and the redirect URL
+    Map<String, String> response = new HashMap<>();
+    response.put("token", token);
+    response.put("redirectUrl", redirectUrl);
+
+    return ResponseEntity.ok(response);
+}
 }

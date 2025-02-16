@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServiceStagiaire {
@@ -17,6 +18,9 @@ public class ServiceStagiaire {
 
 
     public Stagiaire addStagiaire(Stagiaire stagiaire) {
+        if(stagiaireRepo.findByEmail(stagiaire.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already taken");
+        }
         String passwordEncoded = bCryptPasswordEncoder.encode(stagiaire.getPassword());
         stagiaire.setPassword(passwordEncoded);
         return stagiaireRepo.save(stagiaire);
@@ -45,5 +49,13 @@ public class ServiceStagiaire {
         Stagiaire stagiaire = stagiaireRepo.findById(id).orElseThrow(() -> new IllegalStateException("Stagiaire with id " + id + " does not exist"));
         stagiaire.setStatut(updatedStagiaire.getStatut());
         return stagiaireRepo.save(stagiaire);
+    }
+
+    public Stagiaire getStagiaireById(Long stagiaireId) {
+        return stagiaireRepo.findById(stagiaireId).orElseThrow(() -> new IllegalStateException("Stagiaire with id " + stagiaireId + " does not exist"));
+    }
+
+    public Optional<Stagiaire> findByEmail(String email) {
+        return stagiaireRepo.findByEmail(email);
     }
 }

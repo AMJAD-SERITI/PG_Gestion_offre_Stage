@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -28,7 +29,6 @@ public class AdminController {
     @Autowired
     private RhService rhService;
 
-
     @PostMapping("/register")
     public ResponseEntity<String> registerAdmin(@RequestBody Admin admin) {
         adminService.registerAdmin(admin);
@@ -39,18 +39,27 @@ public class AdminController {
     public ResponseEntity<String> addUser(@PathVariable String role, @RequestParam String email, @RequestParam String password) {
         switch (role.toUpperCase()) {
             case "ENCADRANT":
+                if (encadrantService.findByEmail(email).isPresent()) {
+                    return ResponseEntity.badRequest().body("Email is already taken");
+                }
                 Encadrant encadrant = new Encadrant();
                 encadrant.setEmail(email);
                 encadrant.setPassword(password);
                 encadrantService.saveEncadrant(encadrant);
                 return ResponseEntity.ok("Encadrant created successfully");
             case "RH":
+                if (rhService.findByEmail(email).isPresent()) {
+                    return ResponseEntity.badRequest().body("Email is already taken");
+                }
                 Rh rh = new Rh();
                 rh.setEmail(email);
                 rh.setPassword(password);
                 rhService.saveRh(rh);
                 return ResponseEntity.ok("RH created successfully");
             case "STAGIAIRE":
+                if (serviceStagiaire.findByEmail(email).isPresent()) {
+                    return ResponseEntity.badRequest().body("Email is already taken");
+                }
                 Stagiaire stagiaire = new Stagiaire();
                 stagiaire.setEmail(email);
                 stagiaire.setPassword(password);

@@ -38,6 +38,5 @@ public class EncadrantController {
         Stagiaire updatedStagiaire = serviceStagiaire.updateStagiaire(id, stagiaire);
         return ResponseEntity.ok(updatedStagiaire);
     }
-
     
 }
