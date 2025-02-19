@@ -1,23 +1,38 @@
 package org.amjad.pg_gestion_offre_stage.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Table(name = "encadrants")
 @AllArgsConstructor
-public class Encadrant {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String nom;
-    private String prenom;
-    private String email;
-    private String password;
+public class Encadrant extends User {
 
+    private boolean validated;
+
+    @OneToMany
+    @JoinColumn(name = "encadrant_id")
+    private List<Stagiaire> stagiaires;
+
+    public List<Stagiaire> getStagiaires() {
+        return stagiaires;
+    }
+
+    public void setStagiaires(List<Stagiaire> stagiaires) {
+        this.stagiaires = stagiaires;
+    }
+
+    public Encadrant(){
+        super();
+        this.setRole(this.getClass().getSimpleName().toUpperCase());
+    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
 }

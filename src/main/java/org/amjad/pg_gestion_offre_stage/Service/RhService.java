@@ -1,31 +1,43 @@
 package org.amjad.pg_gestion_offre_stage.Service;
 
-import jakarta.transaction.Transactional;
-import org.amjad.pg_gestion_offre_stage.Dao.RhRepo;
+import org.amjad.pg_gestion_offre_stage.Dao.CondidatRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
-import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
+
 
 @Service
-public class RhService {
-
-    private final RhRepo rhRepo;
-    private final CondidatService condidatService;
-    private final EncadrantService encadrantService;
+public class CondidatService {
 
     @Autowired
-    public RhService(RhRepo rhRepo, CondidatService condidatService, EncadrantService encadrantService) {
-        this.rhRepo = rhRepo;
-        this.condidatService = condidatService;
-        this.encadrantService = encadrantService;
+    private CondidatRepo condidatRepo;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+    public Condidat getCondidatById(Long id) {
+        return condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
     }
 
-    @Transactional
-    public void associateCondidatToEncadrant(Long condidatId, Long encadrantId) {
-        Condidat condidat = condidatService.getCondidatById(condidatId);
-        Encadrant encadrant = encadrantService.getEncadrantById(encadrantId);
-        condidat.setEncadrant(encadrant);
-        condidatService.saveCondidat(condidat);
+    public void registerCondidat(Condidat condidat) {
+        String encodedPassword = bCryptPasswordEncoder.encode(condidat.getPassword());
+        condidat.setPassword(encodedPassword);
+        condidatRepo.save(condidat);
+    }
+
+    public Condidat getCondidatByEmail(String email) {
+        return condidatRepo.findByEmail(email).orElseThrow(() -> 
+        new IllegalStateException("Condidat with email " + email + " does not exist"));
+    }
+
+    public List<Condidat> getAllCondidat() {
+        return condidatRepo.findAll();
+    }
+
+    public Condidat findByEmail(String email) {
+        return condidatRepo.findByEmail(email).orElseThrow(() -> new UnsupportedOperationException("Unimplemented method 'findByEmail'"));
     }
 }
