@@ -10,6 +10,7 @@ import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
 import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -17,12 +18,14 @@ import jakarta.transaction.Transactional;
 @Service
 public class EncadrantService {
 
+
     @Autowired
     private EncadrantRepo encadrantRepo;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private ServiceStagiaire serviceStagiaire;
+
 
     public Encadrant getEncadrantById(Long encadrantId) {
         return encadrantRepo.findById(encadrantId).orElseThrow(() -> new IllegalStateException("Encadrant with id " + encadrantId + " does not exist"));
@@ -33,11 +36,13 @@ public class EncadrantService {
     }
 
     public void saveEncadrant(Encadrant encadrant) {
+
         if(encadrantRepo.findByEmail(encadrant.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already taken");
         }
         String passwordEncoded = bCryptPasswordEncoder.encode(encadrant.getPassword());
         encadrant.setPassword(passwordEncoded);
+
         encadrantRepo.save(encadrant);
     }
 
@@ -79,5 +84,4 @@ public class EncadrantService {
     public void deleteEncadrant(Long id) {
         encadrantRepo.deleteById(id);
     }
-
 }

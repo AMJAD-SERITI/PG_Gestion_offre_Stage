@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
 
+
     @Autowired
     private AdminRepo adminRepo;
     @Autowired

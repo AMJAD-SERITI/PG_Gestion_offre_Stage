@@ -1,5 +1,6 @@
 package org.amjad.pg_gestion_offre_stage.Entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -12,16 +13,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User implements  UserDetails {
     @Id
     @GeneratedValue
     private Long id;
     private String nom;
     private String prenom;
-    @Column(unique = true)
+
+    @Column(unique = true
     private String email;
     private String password;
     private String role;
@@ -60,14 +64,15 @@ public class User implements  UserDetails {
         this.email = email;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of( new SimpleGrantedAuthority(role));
     }
-
     public String getPassword() {
         return password;
     }
+
 
     @Override
     public String getUsername() {
@@ -94,3 +99,4 @@ public class User implements  UserDetails {
         this.version = version;
     }
 }
+

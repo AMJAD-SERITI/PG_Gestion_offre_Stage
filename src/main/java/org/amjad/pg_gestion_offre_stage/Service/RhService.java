@@ -40,4 +40,12 @@ public class CondidatService {
     public Condidat findByEmail(String email) {
         return condidatRepo.findByEmail(email).orElseThrow(() -> new UnsupportedOperationException("Unimplemented method 'findByEmail'"));
     }
+
+    public Rh getRhById(Long id) {
+        return rhRepo.findById(id).orElseThrow(() -> new IllegalStateException("Rh with id " + id + " does not exist"));
+    }
+
+    public void saveRh(Rh rh) {
+        rhRepo.save(rh);
+    }
 }

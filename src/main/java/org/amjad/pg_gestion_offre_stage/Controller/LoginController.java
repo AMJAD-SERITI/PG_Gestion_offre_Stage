@@ -30,6 +30,7 @@ public class LoginController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+
     @GetMapping
     public String login() {
         return "Login page";

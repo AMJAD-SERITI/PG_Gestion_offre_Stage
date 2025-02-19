@@ -1,15 +1,15 @@
 package org.amjad.pg_gestion_offre_stage.Controller;
 
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
-import org.amjad.pg_gestion_offre_stage.Entity.Demande;
-import org.amjad.pg_gestion_offre_stage.Enum.Duree;
-import org.amjad.pg_gestion_offre_stage.Enum.Etat;
 import org.amjad.pg_gestion_offre_stage.Service.CondidatService;
 import org.amjad.pg_gestion_offre_stage.Service.DemandeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")

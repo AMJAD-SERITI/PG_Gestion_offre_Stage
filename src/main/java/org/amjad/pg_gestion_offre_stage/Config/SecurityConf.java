@@ -29,7 +29,6 @@ public class SecurityConf {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/login", "/logout").permitAll()
                 .requestMatchers("/api/condidat/**").permitAll()
@@ -53,7 +52,6 @@ public class SecurityConf {
                 .csrf(csrf -> csrf.disable());
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

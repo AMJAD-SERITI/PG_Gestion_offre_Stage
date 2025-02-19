@@ -1,7 +1,6 @@
 package org.amjad.pg_gestion_offre_stage.Controller;
 
 import java.util.List;
-
 import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
 import org.amjad.pg_gestion_offre_stage.Service.EncadrantService;
 import org.amjad.pg_gestion_offre_stage.Service.ServiceStagiaire;
@@ -40,3 +39,4 @@ public class EncadrantController {
     }
     
 }
+
