@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
@@ -19,9 +20,11 @@ import java.util.List;
 public class SecurityConf {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
 
-    public SecurityConf(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConf(CustomUserDetailsService customUserDetailsService, JwtRequestFilter jwtRequestFilter) {
         this.customUserDetailsService = customUserDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Bean
@@ -33,8 +36,11 @@ public class SecurityConf {
                 .requestMatchers("/api/rh/**").permitAll()
                 .requestMatchers("/api/admin/**").permitAll()
                 .requestMatchers("/api/encadrant/**").permitAll()
+                .requestMatchers("/api/stagiaire/**").permitAll()
                 .anyRequest().authenticated()
-        );
+        )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
 
         http.cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
@@ -45,6 +51,8 @@ public class SecurityConf {
                     return corsConfiguration;
                 }))
                 .csrf(csrf -> csrf.disable());
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

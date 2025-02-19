@@ -1,6 +1,8 @@
 package org.amjad.pg_gestion_offre_stage.Service;
 
+import org.amjad.pg_gestion_offre_stage.DTO.StagiaireEncadrantDTO;
 import org.amjad.pg_gestion_offre_stage.Dao.StagiaireRepo;
+import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
 import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -55,7 +57,14 @@ public class ServiceStagiaire {
         return stagiaireRepo.findById(stagiaireId).orElseThrow(() -> new IllegalStateException("Stagiaire with id " + stagiaireId + " does not exist"));
     }
 
+
     public Optional<Stagiaire> findByEmail(String email) {
         return stagiaireRepo.findByEmail(email);
+    }
+
+    public StagiaireEncadrantDTO getStagiaireAndEncadrentString(String email) {
+        Stagiaire stagiaire = stagiaireRepo.findByEmail(email).orElseThrow(() -> new IllegalStateException("Stagiaire with email " + email + " does not exist"));
+        Encadrant encadrant = stagiaire.getEncadrant();
+        return new StagiaireEncadrantDTO(stagiaire, encadrant);
     }
 }

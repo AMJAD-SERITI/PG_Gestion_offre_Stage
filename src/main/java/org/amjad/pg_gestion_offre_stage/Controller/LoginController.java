@@ -35,52 +35,60 @@ public class LoginController {
         return "Login page";
     }
 
-@PostMapping
-public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
-    String email = loginRequest.getEmail();
-    String password = loginRequest.getPassword();
+    @PostMapping
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
 
-    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        try {
+            // Authenticate the user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
 
-    Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password, userDetails.getAuthorities()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Load user details
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-    String role = userDetails.getAuthorities().stream()
-            .findFirst()
-            .map(grantedAuthority -> grantedAuthority.getAuthority())
-            .orElse("");
+            // Generate the token
+            String token = jwtTokenUtil.generateToken(userDetails);
 
-    String redirectUrl;
-    switch (role) {
-        case "ADMIN":
-            redirectUrl = "/AdminPage";
-            break;
-        case "CONDIDAT":
-            redirectUrl = "/Candidatures";
-            break;
-        case "ENCADRANT":
-            redirectUrl = "/SupervisorPage";
-            break;
-        case "RH":
-            redirectUrl = "/DemandsPage";
-            break;
-        case "STAGIAIRE":
-            redirectUrl = "/Encadrant";
-            break;
-        default:
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Access Denied"));
+            // Determine the redirect URL based on the user's role
+            String role = userDetails.getAuthorities().stream()
+                    .findFirst()
+                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+                    .orElse("");
+
+            String redirectUrl;
+            switch (role) {
+                case "ADMIN":
+                    redirectUrl = "/AdminPage";
+                    break;
+                case "CONDIDAT":
+                    redirectUrl = "/Candidatures";
+                    break;
+                case "ENCADRANT":
+                    redirectUrl = "/SupervisorPage";
+                    break;
+                case "RH":
+                    redirectUrl = "/DemandsPage";
+                    break;
+                case "STAGIAIRE":
+                    redirectUrl = "/Encadrant"; // Ensure this URL is correct
+                    break;
+                default:
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Access Denied"));
+            }
+
+            // Return both the token and the redirect URL
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("redirectUrl", redirectUrl);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid username or password"));
+        }
     }
-
-    // Generate the token (assuming you have a method to do this)
-    String token = jwtTokenUtil.generateToken(userDetails);
-
-    // Return both the token and the redirect URL
-    Map<String, String> response = new HashMap<>();
-    response.put("token", token);
-    response.put("redirectUrl", redirectUrl);
-
-    return ResponseEntity.ok(response);
-}
 }

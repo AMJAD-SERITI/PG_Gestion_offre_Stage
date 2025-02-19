@@ -4,10 +4,12 @@ import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
 import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
 import org.amjad.pg_gestion_offre_stage.Entity.Admin;
 import org.amjad.pg_gestion_offre_stage.Entity.Rh;
+import org.amjad.pg_gestion_offre_stage.Entity.Stagiaire;
 import org.amjad.pg_gestion_offre_stage.Dao.CondidatRepo;
 import org.amjad.pg_gestion_offre_stage.Dao.EncadrantRepo;
 import org.amjad.pg_gestion_offre_stage.Dao.AdminRepo;
 import org.amjad.pg_gestion_offre_stage.Dao.RhRepo;
+import org.amjad.pg_gestion_offre_stage.Dao.StagiaireRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private RhRepo rhRepository;
+
+    @Autowired
+    private StagiaireRepo stagiaireRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -64,6 +69,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (rh != null) {
             authorities.add(new SimpleGrantedAuthority(rh.getRole()));
             return new org.springframework.security.core.userdetails.User(rh.getEmail(), rh.getPassword(), authorities);
+        }
+
+        // Check if the user is a Stagiaire
+        Stagiaire stagiaire = stagiaireRepository.findByEmail(email).orElse(null);
+        if (stagiaire != null) {
+            authorities.add(new SimpleGrantedAuthority(stagiaire.getRole()));
+            return new org.springframework.security.core.userdetails.User(stagiaire.getEmail(), stagiaire.getPassword(), authorities);
         }
 
         throw new UsernameNotFoundException("User not found with email: " + email);

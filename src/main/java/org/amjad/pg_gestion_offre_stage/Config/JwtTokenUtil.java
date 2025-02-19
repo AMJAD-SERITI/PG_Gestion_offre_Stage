@@ -1,15 +1,14 @@
 package org.amjad.pg_gestion_offre_stage.Config;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +17,9 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    private SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS512); // Generate a secure key // Replace with your secret key
+    // Replace with your actual base64-encoded key
+    private final String base64SecretKey = "ery1DkmV1vve+GHlvYn6VoszzQ7G6ek6TeSHLKDg0MMoONTgIurn653aniRxbmghKww53iRz9U19gd+Zt1H6xA==";
+    private final SecretKey secretKey = new SecretKeySpec(Base64.getDecoder().decode(base64SecretKey), SignatureAlgorithm.HS512.getJcaName());
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -31,7 +32,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours expiration
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -54,11 +55,10 @@ public class JwtTokenUtil {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        return getExpirationDateFromToken(token).before(new Date());
     }
 }

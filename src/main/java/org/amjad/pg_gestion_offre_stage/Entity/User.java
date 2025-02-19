@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements  UserDetails {
     @Id
     @GeneratedValue
     private Long id;
@@ -60,8 +60,18 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of( new SimpleGrantedAuthority(role));
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
     public void setPassword(String password) {
