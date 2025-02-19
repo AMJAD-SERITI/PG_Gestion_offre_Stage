@@ -3,18 +3,26 @@ package org.amjad.pg_gestion_offre_stage.Service;
 import org.amjad.pg_gestion_offre_stage.Dao.AdminRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Admin;
 import org.amjad.pg_gestion_offre_stage.Entity.Rh;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdminService {
 
-    private final AdminRepo adminRepo;
-    private final RhService rhService;
 
-   
-    public AdminService(AdminRepo adminRepo, RhService rhService) {
-        this.adminRepo = adminRepo;
-        this.rhService = rhService;
+    @Autowired
+    private AdminRepo adminRepo;
+    @Autowired
+    private RhService rhService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+    public void registerAdmin(Admin admin) {
+        String passwordEncoded = bCryptPasswordEncoder.encode(admin.getPassword());
+        admin.setPassword(passwordEncoded);
+        adminRepo.save(admin);
     }
 
     public void valifateRh(Long id) {

@@ -13,14 +13,14 @@ public class Encadrant extends User {
 
     @OneToMany
     @JoinColumn(name = "encadrant_id")
-    private List<Condidat> condidats;
+    private List<Stagiaire> stagiaires;
 
-    public List<Condidat> getCondidats() {
-        return condidats;
+    public List<Stagiaire> getStagiaires() {
+        return stagiaires;
     }
 
-    public void setCondidats(List<Condidat> condidats) {
-        this.condidats = condidats;
+    public void setStagiaires(List<Stagiaire> stagiaires) {
+        this.stagiaires = stagiaires;
     }
 
     public Encadrant(){
