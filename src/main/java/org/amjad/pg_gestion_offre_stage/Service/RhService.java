@@ -1,61 +1,43 @@
 package org.amjad.pg_gestion_offre_stage.Service;
 
-import jakarta.transaction.Transactional;
-import org.amjad.pg_gestion_offre_stage.Dao.RhRepo;
+import org.amjad.pg_gestion_offre_stage.Dao.CondidatRepo;
 import org.amjad.pg_gestion_offre_stage.Entity.Condidat;
-import org.amjad.pg_gestion_offre_stage.Entity.Encadrant;
-import org.amjad.pg_gestion_offre_stage.Entity.Rh;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
-public class RhService {
+public class CondidatService {
 
     @Autowired
-    private  RhRepo rhRepo;
-    @Autowired
-    private  CondidatService condidatService;
-    @Autowired
-    private  EncadrantService encadrantService;
+    private CondidatRepo condidatRepo;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    public Rh getRhById(Long id) {
-        return rhRepo.findById(id).orElseThrow(() -> new IllegalStateException("Rh with id " + id + " does not exist"));
+    public Condidat getCondidatById(Long id) {
+        return condidatRepo.findById(id).orElseThrow(() -> new IllegalStateException("Condidat with id " + id + " does not exist"));
     }
 
-    public void saveRh(Rh rh) {
-        if(rhRepo.findByEmail(rh.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
-        }
-        String passwordEncoded = bCryptPasswordEncoder.encode(rh.getPassword());
-        rh.setPassword(passwordEncoded);
-        rhRepo.save(rh);
+    public void registerCondidat(Condidat condidat) {
+        String encodedPassword = bCryptPasswordEncoder.encode(condidat.getPassword());
+        condidat.setPassword(encodedPassword);
+        condidatRepo.save(condidat);
     }
 
-    public List<Rh> getAllRhs() {
-        return rhRepo.findAll();
+    public Condidat getCondidatByEmail(String email) {
+        return condidatRepo.findByEmail(email).orElseThrow(() -> 
+        new IllegalStateException("Condidat with email " + email + " does not exist"));
     }
 
-    public Rh updateRh(Long id, Rh updatedRh) {
-        Rh rh = rhRepo.findById(id).orElseThrow(() -> new IllegalStateException("Rh with id " + id + " does not exist"));
-        rh.setNom(updatedRh.getNom());
-        rh.setPrenom(updatedRh.getPrenom());
-        rh.setEmail(updatedRh.getEmail());
-        rh.setPassword(updatedRh.getPassword());
-        return rhRepo.save(rh);
+    public List<Condidat> getAllCondidat() {
+        return condidatRepo.findAll();
     }
 
-    public void deleteRh(Long id) {
-        rhRepo.deleteById(id);
-    }
-
-    public Optional<Rh> findByEmail(String email) {
-        return rhRepo.findByEmail(email);
+    public Condidat findByEmail(String email) {
+        return condidatRepo.findByEmail(email).orElseThrow(() -> new UnsupportedOperationException("Unimplemented method 'findByEmail'"));
     }
 }
